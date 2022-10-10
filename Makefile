@@ -15,6 +15,6 @@ test:
 	slcand -o -c -F -s6 $(SPORT)
 
 monitor:
-	picocom --imap spchex -b 9600 $(SPORT)
+	picocom -c --imap spchex,crlf --omap lfcr -b 9600 $(SPORT)
 
 .PHONY: build upload test
