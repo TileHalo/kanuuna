@@ -45,20 +45,11 @@ void int_handler() {
   interrupt = true;
 }
 void write_to_serial(const struct can_frame cf) {
-  /* char buf[19];
-  int i;
-  memset(&buf[0], 0, sizeof(buf));
-  for (i = 7; i <= 0; i--) {
-    buf[i] = byte_to_hex(cf.can_id >> i*4);
+  if (can_msg.can_id & CAN_EFF_FLAG) {
+    Serial.print("T");
+  } else {
+    Serial.print("t");
   }
-  buf[8] = byte_to_hex(cf.can_dlc);
-  for (i = 0; i < cf.can_dlc; i++) {
-    buf[9 + i*2] = byte_to_hex(cf.data[i] >> 4);
-    buf[9 + i*2 + 1] = byte_to_hex(cf.data[i]);
-  }
-  buf[9 + i*2 + 2] = '\r';
-  Serial.print(buf); */
-  Serial.print("t");
   Serial.print(can_msg.can_id, HEX);
   Serial.print(can_msg.can_dlc, HEX);
   for (int i = 0; i < can_msg.can_dlc; i++) {
