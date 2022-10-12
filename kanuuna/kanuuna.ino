@@ -74,8 +74,6 @@ bool read_from_serial() {
 
   memset(&msg[0], 0, sizeof(msg));
   s = Serial.readStringUntil('\r');
-  /* Serial.print(s); */
-
   s.toCharArray(msg, 19);
   Serial.print(parse_canusb(msg, mcp));
 
@@ -86,8 +84,9 @@ bool read_from_serial() {
 void setup() {
   while(!Serial);
   Serial.begin(baud);
-  SPI.begin();
-  /* mcp.reset(); */
+  mcp.reset();
+  mcp.setBitrate(CAN_500KBPS, MCP_8MHZ);
+  mcp.setNormalMode();
   /* pinMode(2, INPUT_PULLUP); */
   /* attachInterrupt(0, int_handler, FALLING); */
   queue.head = 0;
@@ -108,7 +107,7 @@ void loop() {
   }
   err = mcp.readMessage(&can_msg);
   if (err == MCP2515::ERROR_OK) {
-    write_to_serial(cmsg);
+    write_to_serial(can_msg);
     /* can_queue_push(can_msg, &queue); */
   } else if (err != MCP2515::ERROR_NOMSG) {
     Serial.print("\a");
